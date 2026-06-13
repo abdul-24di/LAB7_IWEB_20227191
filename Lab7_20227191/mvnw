@@ -1,86 +1,689 @@
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
---
--- Host: localhost    Database: mydb
--- ------------------------------------------------------
--- Server version	8.0.34
+Lab9_CODIGO/
+├── src/
+│   └── main/
+│       └── java/
+│           ├── beans/
+│           │   ├── Usuario.java
+│           │   └── Transaccion.java
+│           ├── dao/
+│           │   ├── ConexionDB.java
+│           │   ├── UsuarioDAO.java
+│           │   └── TransaccionDAO.java
+│           └── servlets/
+│               ├── LoginServlet.java
+│               ├── LogoutServlet.java
+│               ├── UsuarioServlet.java
+│               └── TransaccionServlet.java
+└── src/
+    └── main/
+        └── webapp/
+            ├── WEB-INF/
+            │   └── web.xml
+            ├── partials/
+            │   └── navbar.jsp
+            ├── login.jsp
+            ├── usuarios_lista.jsp
+            ├── usuarios_form.jsp
+            ├── transacciones_lista.jsp
+            └── transacciones_form.jsp
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `transacciones`
---
 
-DROP TABLE IF EXISTS `transacciones`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `transacciones` (
-  `idtransacciones` int NOT NULL,
-  `monto` double NOT NULL,
-  `descripcion` varchar(200) DEFAULT NULL,
-  `titulo` varchar(100) NOT NULL,
-  `fecha` date NOT NULL,
-  `usuarios_idusuarios` int NOT NULL,
-  `tipo` varchar(100) NOT NULL,
-  PRIMARY KEY (`idtransacciones`),
-  KEY `fk_transacciones_usuarios_idx` (`usuarios_idusuarios`),
-  CONSTRAINT `fk_transacciones_usuarios` FOREIGN KEY (`usuarios_idusuarios`) REFERENCES `usuarios` (`idusuarios`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
+/* =====================================================================
+   ============================ BEANS ==================================
+   ===================================================================== */
 
---
--- Dumping data for table `transacciones`
---
+/* -------- beans/Usuario.java -------- */
+package beans;
 
-LOCK TABLES `transacciones` WRITE;
-/*!40000 ALTER TABLE `transacciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transacciones` ENABLE KEYS */;
-UNLOCK TABLES;
+public class Usuario {
+    private int idusuarios;
+    private String nombre;
+    private String apellido;
+    private String pass;
+    private String dni;
+    private String correo;
 
---
--- Table structure for table `usuarios`
---
+    public Usuario() {} // requerido por <jsp:useBean>
 
-DROP TABLE IF EXISTS `usuarios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usuarios` (
-  `idusuarios` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(100) NOT NULL,
-  `pass` varchar(500) NOT NULL,
-  `dni` varchar(8) NOT NULL,
-  `correo` varchar(100) NOT NULL,
-  PRIMARY KEY (`idusuarios`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
+    public int getIdusuarios() { return idusuarios; }
+    public void setIdusuarios(int idusuarios) { this.idusuarios = idusuarios; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public String getPass() { return pass; }
+    public void setPass(String pass) { this.pass = pass; }
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+}
 
---
--- Dumping data for table `usuarios`
---
+/* -------- beans/Transaccion.java -------- */
+package beans;
 
-LOCK TABLES `usuarios` WRITE;
-/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Gabriel','Guerra','d54123de468bd42ea00dafbd777f85fe5fa1ff6404d9838c007953c25c92a1c5','12345678','gabriel.guerra@gmail.com');
-/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+public class Transaccion {
+    private int idtransacciones;
+    private double monto;
+    private String descripcion;
+    private String titulo;
+    private String fecha;
+    private int usuariosIdusuarios;
+    private String tipo;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+    public Transaccion() {} // requerido por <jsp:useBean>
 
--- Dump completed on 2025-06-11 18:04:52
+    public int getIdtransacciones() { return idtransacciones; }
+    public void setIdtransacciones(int idtransacciones) { this.idtransacciones = idtransacciones; }
+    public double getMonto() { return monto; }
+    public void setMonto(double monto) { this.monto = monto; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
+    public int getUsuariosIdusuarios() { return usuariosIdusuarios; }
+    public void setUsuariosIdusuarios(int usuariosIdusuarios) { this.usuariosIdusuarios = usuariosIdusuarios; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+}
 
+
+/* =====================================================================
+   ============================= DAO ===================================
+   ===================================================================== */
+
+/* -------- dao/ConexionDB.java -------- */
+package dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class ConexionDB {
+    private static final String URL  = "jdbc:mysql://localhost:3306/mydb?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASS = "root"; // ajusta a tu entorno
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("Driver MySQL no encontrado", e);
+        }
+        return DriverManager.getConnection(URL, USER, PASS);
+    }
+}
+
+/* -------- dao/UsuarioDAO.java -------- */
+package dao;
+
+import beans.Usuario;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UsuarioDAO {
+
+    // LOGIN: el cifrado se valida directamente en el SQL con SHA2(?,256)
+    public Usuario login(String correo, String pass) {
+        String sql = "SELECT idusuarios, nombre, apellido, dni, correo " +
+                     "FROM usuarios WHERE correo = ? AND pass = SHA2(?, 256)";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, correo);
+            ps.setString(2, pass);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setIdusuarios(rs.getInt("idusuarios"));
+                    u.setNombre(rs.getString("nombre"));
+                    u.setApellido(rs.getString("apellido"));
+                    u.setDni(rs.getString("dni"));
+                    u.setCorreo(rs.getString("correo"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
+
+    public List<Usuario> listar() {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT idusuarios, nombre, apellido, dni, correo FROM usuarios";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Usuario u = new Usuario();
+                u.setIdusuarios(rs.getInt("idusuarios"));
+                u.setNombre(rs.getString("nombre"));
+                u.setApellido(rs.getString("apellido"));
+                u.setDni(rs.getString("dni"));
+                u.setCorreo(rs.getString("correo"));
+                lista.add(u);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return lista;
+    }
+
+    public boolean existeCorreo(String correo) {
+        String sql = "SELECT 1 FROM usuarios WHERE correo = ?";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, correo);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next(); }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return true; // ante error, asumimos que existe para no insertar
+    }
+
+    public boolean existeDni(String dni) {
+        String sql = "SELECT 1 FROM usuarios WHERE dni = ?";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, dni);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next(); }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return true;
+    }
+
+    // INSERT: la contraseña se cifra con SHA2(?,256) en el propio SQL
+    public boolean crear(Usuario u) {
+        String sql = "INSERT INTO usuarios (nombre, apellido, pass, dni, correo) " +
+                     "VALUES (?, ?, SHA2(?, 256), ?, ?)";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, u.getNombre());
+            ps.setString(2, u.getApellido());
+            ps.setString(3, u.getPass());
+            ps.setString(4, u.getDni());
+            ps.setString(5, u.getCorreo());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+}
+
+/* -------- dao/TransaccionDAO.java -------- */
+package dao;
+
+import beans.Transaccion;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TransaccionDAO {
+
+    // LISTAR por usuario en sesión — una sola query
+    public List<Transaccion> listarPorUsuario(int idUsuario) {
+        List<Transaccion> lista = new ArrayList<>();
+        String sql = "SELECT idtransacciones, titulo, monto, tipo, descripcion, fecha " +
+                     "FROM transacciones WHERE usuarios_idusuarios = ?";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Transaccion t = new Transaccion();
+                    t.setIdtransacciones(rs.getInt("idtransacciones"));
+                    t.setTitulo(rs.getString("titulo"));
+                    t.setMonto(rs.getDouble("monto"));
+                    t.setTipo(rs.getString("tipo"));
+                    t.setDescripcion(rs.getString("descripcion"));
+                    t.setFecha(rs.getString("fecha"));
+                    lista.add(t);
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return lista;
+    }
+
+    public boolean crear(Transaccion t) {
+        String sql = "INSERT INTO transacciones " +
+                     "(monto, descripcion, titulo, fecha, usuarios_idusuarios, tipo) " +
+                     "VALUES (?, ?, ?, CURDATE(), ?, ?)";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDouble(1, t.getMonto());
+            ps.setString(2, t.getDescripcion());
+            ps.setString(3, t.getTitulo());
+            ps.setInt(4, t.getUsuariosIdusuarios());
+            ps.setString(5, t.getTipo());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    // BORRAR solo si la transacción pertenece al usuario en sesión
+    public boolean borrar(int idTransaccion, int idUsuario) {
+        String sql = "DELETE FROM transacciones " +
+                     "WHERE idtransacciones = ? AND usuarios_idusuarios = ?";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idTransaccion);
+            ps.setInt(2, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+}
+
+
+/* =====================================================================
+   =========================== SERVLETS ================================
+   ===================================================================== */
+
+/* -------- servlets/LoginServlet.java -------- */
+package servlets;
+
+import beans.Usuario;
+import dao.UsuarioDAO;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
+
+    // Muestra el formulario de login. Si ya hay sesión, va a usuarios.
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("usuarioLogueado") != null) {
+            response.sendRedirect("usuarios");
+            return;
+        }
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String correo = request.getParameter("correo");
+        String pass   = request.getParameter("pass");
+
+        UsuarioDAO dao = new UsuarioDAO();
+        Usuario u = dao.login(correo, pass);
+
+        HttpSession session = request.getSession();
+        if (u != null) {
+            session.setAttribute("usuarioLogueado", u);
+            session.setMaxInactiveInterval(30 * 60); // 30 min
+            response.sendRedirect("usuarios");
+        } else {
+            session.setAttribute("error", "Correo o contraseña incorrectos");
+            response.sendRedirect("login");
+        }
+    }
+}
+
+/* -------- servlets/LogoutServlet.java -------- */
+package servlets;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/logout")
+public class LogoutServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        response.sendRedirect("login");
+    }
+}
+
+/* -------- servlets/UsuarioServlet.java -------- */
+package servlets;
+
+import beans.Usuario;
+import dao.UsuarioDAO;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet("/usuarios")
+public class UsuarioServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("usuarioLogueado") == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        String accion = request.getParameter("accion");
+        UsuarioDAO dao = new UsuarioDAO();
+
+        if ("form".equals(accion)) {
+            request.getRequestDispatcher("usuarios_form.jsp").forward(request, response);
+        } else {
+            List<Usuario> lista = dao.listar();
+            request.setAttribute("listaUsuarios", lista);
+            request.getRequestDispatcher("usuarios_lista.jsp").forward(request, response);
+        }
+    }
+
+    // CREAR usuario con validaciones
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("usuarioLogueado") == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        String nombre   = trim(request.getParameter("nombre"));
+        String apellido = trim(request.getParameter("apellido"));
+        String dni      = trim(request.getParameter("dni"));
+        String correo   = trim(request.getParameter("correo"));
+        String pass     = request.getParameter("pass");
+
+        UsuarioDAO dao = new UsuarioDAO();
+        String error = null;
+
+        if (vacio(nombre) || vacio(apellido) || vacio(dni) || vacio(correo) || vacio(pass)) {
+            error = "Todos los campos son requeridos";
+        } else if (!dni.matches("\\d{8}")) {
+            error = "El DNI debe tener 8 dígitos numéricos";
+        } else if (!pass.matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$")) {
+            error = "La contraseña debe tener mínimo 8 caracteres con letras y números";
+        } else if (dao.existeDni(dni)) {
+            error = "El DNI ya está registrado";
+        } else if (dao.existeCorreo(correo)) {
+            error = "El correo ya está registrado";
+        }
+
+        if (error != null) {
+            session.setAttribute("error", error);
+            response.sendRedirect("usuarios?accion=form");
+            return;
+        }
+
+        Usuario u = new Usuario();
+        u.setNombre(nombre);
+        u.setApellido(apellido);
+        u.setDni(dni);
+        u.setCorreo(correo);
+        u.setPass(pass); // se cifra con SHA2 en el DAO/SQL
+
+        if (dao.crear(u)) {
+            session.setAttribute("exito", "Usuario registrado correctamente");
+            response.sendRedirect("usuarios");
+        } else {
+            session.setAttribute("error", "No se pudo registrar el usuario");
+            response.sendRedirect("usuarios?accion=form");
+        }
+    }
+
+    private boolean vacio(String s) { return s == null || s.trim().isEmpty(); }
+    private String trim(String s) { return s == null ? null : s.trim(); }
+}
+
+/* -------- servlets/TransaccionServlet.java -------- */
+package servlets;
+
+import beans.Transaccion;
+import beans.Usuario;
+import dao.TransaccionDAO;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet("/transacciones")
+public class TransaccionServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Usuario logueado = (Usuario) session.getAttribute("usuarioLogueado");
+        if (logueado == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        String accion = request.getParameter("accion");
+        TransaccionDAO dao = new TransaccionDAO();
+
+        if ("form".equals(accion)) {
+            request.getRequestDispatcher("transacciones_form.jsp").forward(request, response);
+        } else if ("borrar".equals(accion)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            dao.borrar(id, logueado.getIdusuarios()); // solo si es suya
+            response.sendRedirect("transacciones");
+        } else {
+            List<Transaccion> lista = dao.listarPorUsuario(logueado.getIdusuarios());
+            request.setAttribute("listaTransacciones", lista);
+            request.getRequestDispatcher("transacciones_lista.jsp").forward(request, response);
+        }
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Usuario logueado = (Usuario) session.getAttribute("usuarioLogueado");
+        if (logueado == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        String titulo      = trim(request.getParameter("titulo"));
+        String tipo        = request.getParameter("tipo");
+        String descripcion = request.getParameter("descripcion");
+        String montoStr    = request.getParameter("monto");
+
+        String error = null;
+        double monto = 0;
+
+        if (vacio(titulo)) {
+            error = "El título es requerido";
+        } else if (!"ingreso".equals(tipo) && !"egreso".equals(tipo)) {
+            error = "El tipo debe ser ingreso o egreso";
+        } else {
+            try {
+                monto = Double.parseDouble(montoStr);
+                if (monto <= 0) error = "El monto debe ser mayor a 0";
+            } catch (NumberFormatException e) {
+                error = "El monto debe ser un número válido";
+            }
+        }
+
+        if (error != null) {
+            session.setAttribute("error", error);
+            response.sendRedirect("transacciones?accion=form");
+            return;
+        }
+
+        Transaccion t = new Transaccion();
+        t.setTitulo(titulo);
+        t.setTipo(tipo);
+        t.setDescripcion(descripcion);
+        t.setMonto(monto);
+        t.setUsuariosIdusuarios(logueado.getIdusuarios());
+
+        TransaccionDAO dao = new TransaccionDAO();
+        if (dao.crear(t)) {
+            session.setAttribute("exito", "Transacción registrada");
+            response.sendRedirect("transacciones");
+        } else {
+            session.setAttribute("error", "No se pudo registrar la transacción");
+            response.sendRedirect("transacciones?accion=form");
+        }
+    }
+
+    private boolean vacio(String s) { return s == null || s.trim().isEmpty(); }
+    private String trim(String s) { return s == null ? null : s.trim(); }
+}
+
+
+<%-- ==================================================================
+     ============================ JSP ===============================
+     ================================================================== --%>
+
+<%-- -------- partials/navbar.jsp -------- --%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<jsp:useBean id="usuarioLogueado" class="beans.Usuario" scope="session" />
+<div style="background:#2c3e50;color:#fff;padding:10px;">
+    <strong>Gestión de Gastos &ndash; <%= usuarioLogueado.getNombre() %></strong>
+    &nbsp;|&nbsp;
+    <a href="usuarios" style="color:#fff;">Usuarios</a>
+    &nbsp;|&nbsp;
+    <a href="transacciones" style="color:#fff;">Transacciones</a>
+    &nbsp;|&nbsp;
+    <a href="logout" style="color:#fff;">Cerrar sesión</a>
+</div>
+
+<%-- -------- login.jsp -------- --%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head><title>Iniciar sesión</title></head>
+<body>
+    <h2>Iniciar sesión</h2>
+    <% if (session.getAttribute("error") != null) { %>
+        <p style="color:red;"><%= session.getAttribute("error") %></p>
+        <% session.removeAttribute("error"); %>
+    <% } %>
+    <form action="login" method="post">
+        <label>Correo:</label><br/>
+        <input type="email" name="correo" required/><br/><br/>
+        <label>Contraseña:</label><br/>
+        <input type="password" name="pass" required/><br/><br/>
+        <button type="submit">Ingresar</button>
+    </form>
+</body>
+</html>
+
+<%-- -------- usuarios_lista.jsp -------- --%>
+<%@ page contentType="text/html;charset=UTF-8" import="java.util.List, beans.Usuario" %>
+<html>
+<head><title>Usuarios</title></head>
+<body>
+    <jsp:include page="partials/navbar.jsp" />
+    <h2>Lista de usuarios</h2>
+    <% if (session.getAttribute("exito") != null) { %>
+        <p style="color:green;"><%= session.getAttribute("exito") %></p>
+        <% session.removeAttribute("exito"); %>
+    <% } %>
+    <a href="usuarios?accion=form">Nuevo usuario</a>
+    <table border="1" cellpadding="5">
+        <tr><th>ID</th><th>Nombre</th><th>Apellido</th><th>DNI</th><th>Correo</th></tr>
+        <%
+            List<Usuario> lista = (List<Usuario>) request.getAttribute("listaUsuarios");
+            if (lista != null) {
+                for (Usuario u : lista) {
+        %>
+            <tr>
+                <td><%= u.getIdusuarios() %></td>
+                <td><%= u.getNombre() %></td>
+                <td><%= u.getApellido() %></td>
+                <td><%= u.getDni() %></td>
+                <td><%= u.getCorreo() %></td>
+            </tr>
+        <%      }
+            } %>
+    </table>
+</body>
+</html>
+
+<%-- -------- usuarios_form.jsp -------- --%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head><title>Nuevo usuario</title></head>
+<body>
+    <jsp:include page="partials/navbar.jsp" />
+    <h2>Registrar usuario</h2>
+    <% if (session.getAttribute("error") != null) { %>
+        <p style="color:red;"><%= session.getAttribute("error") %></p>
+        <% session.removeAttribute("error"); %>
+    <% } %>
+    <form action="usuarios" method="post">
+        <label>Nombre:</label><br/>
+        <input type="text" name="nombre" required/><br/><br/>
+        <label>Apellido:</label><br/>
+        <input type="text" name="apellido" required/><br/><br/>
+        <label>DNI:</label><br/>
+        <input type="text" name="dni" required/><br/><br/>
+        <label>Correo:</label><br/>
+        <input type="email" name="correo" required/><br/><br/>
+        <label>Contraseña:</label><br/>
+        <input type="password" name="pass" required/><br/><br/>
+        <button type="submit">Registrar</button>
+    </form>
+</body>
+</html>
+
+<%-- -------- transacciones_lista.jsp -------- --%>
+<%@ page contentType="text/html;charset=UTF-8" import="java.util.List, beans.Transaccion" %>
+<html>
+<head><title>Transacciones</title></head>
+<body>
+    <jsp:include page="partials/navbar.jsp" />
+    <h2>Mis transacciones</h2>
+    <% if (session.getAttribute("exito") != null) { %>
+        <p style="color:green;"><%= session.getAttribute("exito") %></p>
+        <% session.removeAttribute("exito"); %>
+    <% } %>
+    <a href="transacciones?accion=form">Nueva transacción</a>
+    <table border="1" cellpadding="5">
+        <tr><th>ID</th><th>Título</th><th>Monto</th><th>Tipo</th>
+            <th>Descripción</th><th>Fecha</th><th>Acción</th></tr>
+        <%
+            List<Transaccion> lista = (List<Transaccion>) request.getAttribute("listaTransacciones");
+            if (lista != null) {
+                for (Transaccion t : lista) {
+        %>
+            <tr>
+                <td><%= t.getIdtransacciones() %></td>
+                <td><%= t.getTitulo() %></td>
+                <td><%= t.getMonto() %></td>
+                <td><%= t.getTipo() %></td>
+                <td><%= t.getDescripcion() %></td>
+                <td><%= t.getFecha() %></td>
+                <td><a href="transacciones?accion=borrar&id=<%= t.getIdtransacciones() %>"
+                       onclick="return confirm('¿Eliminar?')">Borrar</a></td>
+            </tr>
+        <%      }
+            } %>
+    </table>
+</body>
+</html>
+
+<%-- -------- transacciones_form.jsp -------- --%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head><title>Nueva transacción</title></head>
+<body>
+    <jsp:include page="partials/navbar.jsp" />
+    <h2>Registrar transacción</h2>
+    <% if (session.getAttribute("error") != null) { %>
+        <p style="color:red;"><%= session.getAttribute("error") %></p>
+        <% session.removeAttribute("error"); %>
+    <% } %>
+    <form action="transacciones" method="post">
+        <label>Título:</label><br/>
+        <input type="text" name="titulo" required/><br/><br/>
+        <label>Tipo:</label><br/>
+        <select name="tipo">
+            <option value="ingreso">Ingreso</option>
+            <option value="egreso">Egreso</option>
+        </select><br/><br/>
+        <label>Descripción:</label><br/>
+        <textarea name="descripcion"></textarea><br/><br/>
+        <label>Monto:</label><br/>
+        <input type="number" step="0.01" name="monto" required/><br/><br/>
+        <button type="submit">Registrar</button>
+    </form>
+</body>
+</html>
+
+
+-- CORRECCIÓN: el PK de transacciones debe ser autoincremental
+ALTER TABLE `transacciones` MODIFY `idtransacciones` INT NOT NULL AUTO_INCREMENT;
